@@ -72,40 +72,31 @@ if __name__ == '__main__':
 
     # np.random.seed(2)
     # # ============================= new config
-    stoch = 0.05
+    stoch = 0.1
     world = GridWorld(7, 10, random_action_p=stoch)
     V = value_iteration(world, max_iters=1000, eps_convergence=1e-5)
-    pickle.dump((world, V), open('/home/mheuillet/Desktop/vi_{}.pkl'.format(stoch), mode='wb'))
+    pickle.dump((world, V), open('./results/vi_{}.pkl'.format(stoch), mode='wb'))
 
     # ============================= load
-    world, V = pickle.load(open('/home/mheuillet/Desktop/vi_{}.pkl'.format(stoch), 'rb'))
+    world, V = pickle.load(open('./results/vi_{}.pkl'.format(stoch), 'rb'))
 
-    # ============================= RUN
+    for alpha in [1,0.04, 0.01]:
+        # ============================= RUN
+        img = np.array([V.V[ix].cvar_alpha(alpha) for ix in np.ndindex(V.V.shape)]).reshape(V.V.shape)
+        pickle.dump(img, open('./results/map_{}_{}.pkl'.format(alpha, stoch), 'wb'))
+
+        #Optimal path
+        path = V.optimal_path(alpha)
+        opt_path = [  [s[1] for s in path], [s[0] for s in path] ]
+        pickle.dump(opt_path, open('./results/path_{}_{}.pkl'.format(alpha, stoch), 'wb'))
+
     
-    pm = InteractivePlotMachine(world, V, alpha=0.01, stochasticity = stoch)
-    # pm.show()
+    # pm = InteractivePlotMachine(world, V, alpha=0.01, stochasticity = stoch)
+    # # pm.show()
 
-    pm = InteractivePlotMachine(world, V, alpha=0.1, stochasticity = stoch)
-    # pm.show()
+    # pm = InteractivePlotMachine(world, V, alpha=0.1, stochasticity = stoch)
+    # # pm.show()
 
-    pm = InteractivePlotMachine(world, V, alpha=1, stochasticity = stoch)
-    # pm.show()
+    # pm = InteractivePlotMachine(world, V, alpha=1, stochasticity = stoch)
+    # # pm.show()
 
-    # =============== VI stats
-    # nb_epochs = int(1e6)
-    # rewards_sample = []
-    # for alpha in [0.1, 0.25, 0.5, 1.]:
-    #     _, rewards = policy_stats(world, TamarPolicy(V, alpha), alpha, nb_epochs=nb_epochs)
-    #     rewards_sample.append(rewards)
-    # np.save('files/sample_rewards_tamar.npy', np.array(rewards_sample))
-    # policy_stats(world, var_policy, alpha, nb_epochs=nb_epochs)
-
-    # =============== plot dynamic
-    # V_visual = np.array([[V.V[i, j].cvar_alpha(alpha) for j in range(len(V.V[i]))] for i in range(len(V.V))])
-    # # print(V_visual)
-    # plot_machine = PlotMachine(world, V_visual)
-    # # policy = var_policy
-    # for i in range(100):
-    #     S, A, R = epoch(world, policy, plot_machine=plot_machine)
-    #     print('{}: {}'.format(i, np.sum(R)))
-    #     policy.reset()

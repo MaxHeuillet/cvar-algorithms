@@ -3,6 +3,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
 from cvar.gridworld.cliffwalker import State
 from cvar.gridworld.core import cvar_computation
+import pickle
 
 # arrows
 offsets = {0: (0.4, 0), 1: (-0.4, 0), 2: (0, 0.4), 3: (0, -0.4)}
@@ -53,31 +54,42 @@ class PlotMachine:
 # TODO: unify imshow
 class InteractivePlotMachine:
 
-    def __init__(self, world, V, action_value=False, alpha=1):
+    def __init__(self, world, V, seed, alpha, action_value=False,  stochasticity = 0.1):
+
         self.world = world
         self.V = V
+        self.alpha = alpha
+        self.stochasticity = stochasticity
+        self.seed = seed
+
         if action_value:
             img = np.max(np.array([V.Q[ix].yc_alpha(alpha)/alpha for ix in np.ndindex(V.Q.shape)]).reshape(V.Q.shape), axis=-1)
             print(img.shape)
+            pickle.dump(img, open('/home/mheuillet/Desktop/CVAR-QLEARNING/Qmap_{}_{}_{}.pkl'.format(self.alpha, self.stochasticity, self.seed), 'wb'))
 
-            self.fig, self.ax = grid_plot(world, img)
-            self.fig.canvas.mpl_connect('button_press_event', self.handle_click_q)
+
+            # self.fig, self.ax = grid_plot(world, img)
+            # self.fig.canvas.mpl_connect('button_press_event', self.handle_click_q)
         else:
             img = np.array([V.V[ix].cvar_alpha(alpha) for ix in np.ndindex(V.V.shape)]).reshape(V.V.shape)
-            print(img.shape)
+        # pickle.dump(img, open('/home/mheuillet/Desktop/map_{}_{}.pkl'.format(self.alpha, self.stochasticity), 'wb'))
+        #     self.fig, self.ax = grid_plot(world, img)
+        #     self.fig.canvas.mpl_connect('button_press_event', self.handle_click_v)
 
-            self.fig, self.ax = grid_plot(world, img)
-            self.fig.canvas.mpl_connect('button_press_event', self.handle_click_v)
-
-        self.ax.set_title("$\\alpha={:.2f}$".format(alpha))
-        # Optimal path
+        # self.ax.set_title("$\\alpha={:.2f}$".format(alpha))
+        
+        #Optimal path
         path = self.V.optimal_path(alpha)
-        print(path)
-        self.ax.plot([s[1] for s in path], [s[0] for s in path], 'o-', color='white')
+        opt_path = [  [s[1] for s in path], [s[0] for s in path] ]
+        pickle.dump(opt_path, open('/home/mheuillet/Desktop/CVAR-QLEARNING/Qpath_{}_{}_{}.pkl'.format(self.alpha, self.stochasticity,self.seed), 'wb'))
 
-        #
-        self.state_fig = None
-        self.state_ax = None
+        # print(path)
+        # self.ax.plot( [s[1] for s in path], [s[0] for s in path], 'o-', color='black')
+        # opt_path = [s[1] for s in path], [s[0] for s in path]
+
+        
+        # self.state_fig = None
+        # self.state_ax = None
 
     def handle_click_v(self, event):
 
@@ -195,6 +207,10 @@ def grid_plot(world, img=None, figax=None, sg_size=20):
 
     if img is None:
         img = -1 * np.ones((world.height, world.width))
+    
+    print(img)
+    
+
     # darken cliff
     cool = np.min(img) * 1.1
     for s in world.cliff_states:
@@ -202,7 +218,7 @@ def grid_plot(world, img=None, figax=None, sg_size=20):
 
     im = ax.imshow(img, interpolation='nearest', origin='upper')
     plt.tick_params(axis='both', which='both', bottom='off', top='off',
-                    labelbottom='off', right='off', left='off', labelleft='off')
+     labelbottom='off', right='off', left='off', labelleft='off')
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)

@@ -1,0 +1,7 @@
+README.md
+setup.py
+cvar_algorithms.egg-info/PKG-INFO
+cvar_algorithms.egg-info/SOURCES.txt
+cvar_algorithms.egg-info/dependency_links.txt
+cvar_algorithms.egg-info/requires.txt
+cvar_algorithms.egg-info/top_level.txt
