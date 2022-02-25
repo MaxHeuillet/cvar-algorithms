@@ -1,6 +1,9 @@
 # Risk-Averse Distributional Reinforcement Learning
 
-This is a fork from [this repository](https://github.com/Silvicek/cvar-algorithms). It contains an implementation of CVaR Policy Iteration (Chow. et. al. 2015) that was used in some figures the paper.
+This is a fork from [this repository](https://github.com/Silvicek/cvar-algorithms) that contains an implementation of CVaR Policy Iteration (Chow. et. al. 2015) that was used in some figures the paper. See the figure:
+
+![Optimal Path](figures/CVAR_optimal_0.01_0.05.png)
+
 
 ## Installation
 
