@@ -19,7 +19,7 @@ Install the cvar package (from ./cvar-algorithms directory)
 
 ### CVaR Value Iteration
 
-The fork aims is ran on a LavaGridworld of 10x7 tiles with probability of random action p=0.1.
+The fork aims to run on a LavaGridworld of 10x7 tiles with probability of random action p (either 0.1 or 0.05 in the figures).
 
 For CVaR Value Iteration run (from ./cvar-algorithms/cvar/gridworld directory)
 
