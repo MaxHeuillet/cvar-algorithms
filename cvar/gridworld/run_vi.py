@@ -70,20 +70,26 @@ if __name__ == '__main__':
     import pickle
     from cvar.gridworld.plots.grid import InteractivePlotMachine
 
-    np.random.seed(2)
-    # ============================= new config
-    world = GridWorld(10, 15, random_action_p=0.1)
-    V = value_iteration(world, max_iters=10000, eps_convergence=1e-5)
-    pickle.dump((world, V), open('data/models/vi_test.pkl', mode='wb'))
+    # np.random.seed(2)
+    # # ============================= new config
+    stoch = 0.05
+    world = GridWorld(7, 10, random_action_p=stoch)
+    V = value_iteration(world, max_iters=1000, eps_convergence=1e-5)
+    pickle.dump((world, V), open('/home/mheuillet/Desktop/vi_{}.pkl'.format(stoch), mode='wb'))
 
     # ============================= load
-    world, V = pickle.load(open('data/models/vi_test.pkl', 'rb'))
+    world, V = pickle.load(open('/home/mheuillet/Desktop/vi_{}.pkl'.format(stoch), 'rb'))
 
     # ============================= RUN
-    for alpha in np.arange(0.05, 1.01, 0.05):
-        print(alpha)
-        pm = InteractivePlotMachine(world, V, alpha=alpha)
-        pm.show()
+    
+    pm = InteractivePlotMachine(world, V, alpha=0.01, stochasticity = stoch)
+    # pm.show()
+
+    pm = InteractivePlotMachine(world, V, alpha=0.1, stochasticity = stoch)
+    # pm.show()
+
+    pm = InteractivePlotMachine(world, V, alpha=1, stochasticity = stoch)
+    # pm.show()
 
     # =============== VI stats
     # nb_epochs = int(1e6)
